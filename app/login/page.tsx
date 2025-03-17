@@ -30,14 +30,11 @@ export default function Login() {
         e.preventDefault();
         setLoginInProgress(true);
         const res = await axios.post("/api/auth/login", {
-            headers: {
-              "Content-Type": "application/json",
-            },
             body: formData,
           });
           {console.log(res)
           }
-          if (res.status == 200) {
+          if (res.status === 200) {
             router.push("/");
           } else {
             // Handle error

@@ -15,16 +15,16 @@ export async function middleware(req: NextRequest) {
   const decoded = await verifyToken(token.value);
   if (decoded) {
     if (req.nextUrl.pathname === "/") {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   } else if (req.nextUrl.pathname !== "/posts") {
     // if unauthenticated and not in login page, redirect to login page
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/posts", req.url));
   }
 
   return NextResponse.next();
 }
 export const config = {
  // specify which path to run middleware on
-  matcher: ["/dashboard/(.*)", "/dashboard", "/"],
+  matcher: ["/", "/login"],
 };

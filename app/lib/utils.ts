@@ -5,7 +5,8 @@ const secret = new TextEncoder().encode(
 );
 
 export async function generateToken(payload: {
-  email: string;
+  email: string,
+  password : string
 }): Promise<string> {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })

@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateToken } from "../../../lib/utils";
 
 export async function POST(req: NextRequest) {
-  const { email, password } = await req.json();
+  const { email, password } : any= await req.json();
 
   if (email && password === "") {
     return NextResponse.json({ message: "Email and password are required" });
-  }else{
+  }else if (email === "testuser" && password === "testpass"){
     const token = await generateToken({ email: "testuser", password: "testpass" });
     const response = NextResponse.json({ message: "Login successful" });
+    console.log(response);
+    
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
@@ -17,6 +19,9 @@ export async function POST(req: NextRequest) {
       path: "/",
     });
     return response;
+  }
+  else{
+    return NextResponse.json({ message: "Data Error." });
   }
 
 }

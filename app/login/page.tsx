@@ -4,27 +4,40 @@ import React from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Spinner } from "flowbite-react";
-import { NextRequest, NextResponse } from "next/server";
 import { DarkThemeToggle } from "flowbite-react";
 import { generateToken } from "../lib/utils";
 
-export default function Login(req: NextRequest) {
+export default function Login() {
     const router = useRouter();
+
+
+    const [formData, setFormData] = React.useState({
+        email: '',
+        password: '',
+      });
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+          ...prevState,
+          [name]: value,
+        }));
+      };
+      
 
     const [loginInProgress, setLoginInProgress] = React.useState(false);
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const email = formData.get("email");
-        const password = formData.get("password");
         setLoginInProgress(true);
         const res = await axios.post("/api/auth/login", {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email, password }),
+            body: formData,
           });
-          if (res.data) {
+          {console.log(res)
+          }
+          if (res.status == 200) {
             router.push("/");
           } else {
             // Handle error
@@ -46,11 +59,11 @@ export default function Login(req: NextRequest) {
               <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6" action="#">
                   <div>
                       <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                      <input type="text" name="email" id="email" className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" placeholder="name" />
+                      <input type="text" onChange={handleChange} name="email" value={formData.email}className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" placeholder="name" />
                   </div>
                   <div>
                       <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                      <input hidden type="password" name="password" id="password" placeholder="••••••••" className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" />
+                      <input hidden type="password" onChange={handleChange} name="password" value={formData.password} placeholder="••••••••" className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" />
                   </div>
                   <div className="flex items-center justify-between">
                       <div className="flex items-start">
@@ -63,7 +76,7 @@ export default function Login(req: NextRequest) {
                       </div>
                       <a href="#" className="text-primary-600 dark:text-primary-500 text-sm font-medium hover:underline">Forgot password?</a>
                   </div>
-                  <button type="submit" style={{color: "black"}} className="bg-primary-600 hover:bg-primary-700 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 w-full rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4"> {loginInProgress ? (
+                  <button type="submit" className="bg-primary-600 hover:bg-primary-700 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 w-full rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4"> {loginInProgress ? (
                     <Spinner aria-label="Default status example" />          
               ) : (
                 "Login"
